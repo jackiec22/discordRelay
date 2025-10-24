@@ -1,0 +1,16 @@
+# Railway project configuration
+
+[build]
+# Use the standard Rust build system
+builder = "cargo"
+
+[env]
+# Tell Railway which port your server listens on
+PORT = "8080"
+
+[deploy]
+# Start your binary with Railway’s provided environment
+command = "cargo run --release"
+healthcheckPath = "/send"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
