@@ -8,6 +8,6 @@ PORT = "8080"
 
 [deploy]
 command = "cargo run --release"
-healthcheckPath = "/send"
+healthcheckPath = "/health"
 healthcheckTimeout = 30
 restartPolicyType = "ON_FAILURE"
