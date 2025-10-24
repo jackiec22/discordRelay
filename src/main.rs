@@ -40,7 +40,8 @@ async fn main() {
             .route("/health", get(health_check)); // ✅ new health route
 
     // Bind to port 8080
-    let addr = SocketAddr::from(([0, 0, 0, 0], 8080));
+    let port = env::var("PORT").unwrap_or_else(|_| "8080".to_string());
+    let addr = SocketAddr::from(([0, 0, 0, 0], port.parse().unwrap()));
     let listener = TcpListener::bind(addr).await.unwrap();
     println!("Relay listening on {}", addr);
 
@@ -48,7 +49,6 @@ async fn main() {
     axum::serve(listener, app).await.unwrap();
 }
 
-// ✅ simple health endpoint for Railway
-async fn health_check() -> Json<Value> {
-    Json(json!({ "status": "ok" }))
+async fn health_check() -> (axum::http::StatusCode, &'static str) {
+    (axum::http::StatusCode::OK, "ok")
 }
