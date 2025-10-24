@@ -1,15 +1,12 @@
-# Railway project configuration
+# Railway project configuration for a Rust app
 
 [build]
-# Use the standard Rust build system
-builder = "cargo"
+builder = "nixpacks"
 
 [env]
-# Tell Railway which port your server listens on
 PORT = "8080"
 
 [deploy]
-# Start your binary with Railway’s provided environment
 command = "cargo run --release"
 healthcheckPath = "/send"
 healthcheckTimeout = 30
