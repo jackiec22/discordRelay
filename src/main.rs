@@ -41,6 +41,7 @@ async fn main() {
 
     // Bind to port 8080
     let port = env::var("PORT").unwrap_or_else(|_| "8080".to_string());
+    println!("🚀 Starting on PORT={}", port);
     let addr = SocketAddr::from(([0, 0, 0, 0], port.parse().unwrap()));
     let listener = TcpListener::bind(addr).await.unwrap();
     println!("Relay listening on {}", addr);
