@@ -3,14 +3,14 @@ use axum::{
     Json, Router,
 };
 use reqwest::Client;
-use serde_json::{json, Value};
+use serde_json::Value;
 use std::{env, net::SocketAddr};
 use tokio::net::TcpListener;
 
 #[tokio::main]
 async fn main() {
     // Load .env and get your Discord webhook URL
-    dotenvy::dotenv().ok();
+    let _ = dotenvy::dotenv().ok();
     let discord_url = env::var("DISCORD_WEBHOOK_URL").expect("missing DISCORD_WEBHOOK_URL");
     let client = Client::new();
 
@@ -29,6 +29,13 @@ async fn main() {
                                 |e| (axum::http::StatusCode::BAD_GATEWAY, e.to_string()),
                             )?;
 
+                            // Log to stdout for Railway
+                            if resp.status().is_success() {
+                                println!("✅ Sent to Discord successfully");
+                            } else {
+                                println!("⚠️ Discord returned status: {}", resp.status());
+                            }
+
                             Ok::<_, (axum::http::StatusCode, String)>((
                                 axum::http::StatusCode::from_u16(resp.status().as_u16()).unwrap(),
                                 "ok".to_string(),
@@ -41,7 +48,7 @@ async fn main() {
 
     // Bind to port 8080
     let port = env::var("PORT").unwrap_or_else(|_| "8080".to_string());
-    println!("🚀 Starting on PORT={}", port);
+    println!("Starting on PORT={}", port);
     let addr = SocketAddr::from(([0, 0, 0, 0], port.parse().unwrap()));
     let listener = TcpListener::bind(addr).await.unwrap();
     println!("Relay listening on {}", addr);
